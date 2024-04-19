@@ -1,7 +1,11 @@
 use yew::prelude::*;
 use yew_router::Routable;
 
-use crate::Login;
+use crate::pages::{
+    login::Login,
+    home::Home,
+    signup::Signup,
+};
 
 #[derive(Routable, PartialEq, Clone)]
 pub enum Route {
@@ -18,14 +22,12 @@ impl Route {
     pub fn switch(self) -> Html {
         match self {
             Route::Login => html! { <Login /> },
-            Route::Home => todo!(),
-            Route::Signup => todo!(),
             Route::Meeting1 => todo!(),
             Route::Meeting2 => todo!(),
             Route::Settings => todo!(),
             Route::Profile => todo!(),
-            // Route::Home => html! { <pages::home::Home /> },
-            // Route::Signup => html! { <pages::signup::Signup /> },
+            Route::Home => html! { <Home /> },
+            Route::Signup => html! { <Signup /> },
             // Route::Meeting1 => html! { <pages::meeting1::Meeting1 /> },
             // Route::Meeting2 => html! { <pages::meeting2::Meeting2 /> },
             // Route::Settings => html! { <pages::settings::Settings /> },
