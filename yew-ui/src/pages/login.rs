@@ -54,7 +54,6 @@ pub fn login() -> Html {
                         id="password"
                     />
                 </div>
-
                     <input type="submit" value="LOGIN" class="py-2 px-4 pointer bg-yew-blue rounded-md w-full cursor-pointer" 
                     />
                 </form>

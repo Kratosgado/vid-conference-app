@@ -1,10 +1,9 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-mod route;
+pub mod route;
 use route::Route;
-mod pages;
-pub use pages::login::Login;
+pub mod pages;
 
 struct App {}
 
