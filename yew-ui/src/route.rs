@@ -6,6 +6,7 @@ use crate::pages::{
     home::Home,
     signup::Signup,
 };
+use crate::components::topbar::TopBar;
 
 #[derive(Routable, PartialEq, Clone)]
 pub enum Route {
@@ -26,7 +27,11 @@ impl Route {
             Route::Meeting2 => todo!(),
             Route::Settings => todo!(),
             Route::Profile => todo!(),
-            Route::Home => html! { <Home /> },
+            Route::Home => html! { 
+            <>
+                <TopBar />
+                <Home />
+            </> },
             Route::Signup => html! { <Signup /> },
             // Route::Meeting1 => html! { <pages::meeting1::Meeting1 /> },
             // Route::Meeting2 => html! { <pages::meeting2::Meeting2 /> },
