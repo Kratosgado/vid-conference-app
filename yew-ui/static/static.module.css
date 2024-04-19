@@ -1,8 +1,140 @@
 html,
 body {
   box-sizing: border-box;
+  width: 100%;
   margin: 0;
   padding: 0;
   font-family: "Roboto", sans-serif;
-  background: #2f2f2f;
+}
+
+body {
+  overflow: hidden;
+  height: 100vh;
+  color: white;
+  background-color: #111;
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  margin: auto;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  margin: auto;
+}
+
+.grid-container {
+  width: 100%;
+  height: 100%;
+  margin: 16px 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fe));
+  grid-gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-item {
+  height: fit-content;
+  position: relative;
+}
+
+.grid-item-pinned {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Host camera frame rendered in the bottom right corner */
+.host {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20%;
+  height: auto;
+}
+
+.hidden {
+  display: none;
+}
+
+.self-camera {
+  width: 100%;
+  height: 100%;
+}
+
+.floating-name {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-bottom: 0;
+  background-color: black;
+  color: white;
+}
+
+.controls {
+  top: 0;
+  left: 0;
+  margin-top: 0;
+  margin-left: 0;
+}
+
+.device-selector {
+  width: 200px;
+}
+
+.device-selector-wrapper {
+  margin-bottom: 20px;
+}
+
+:disabled {
+  cursor: default;
+  background-color: dimgrey !important;
+  color: linen !important;
+  opacity: 1 !important;
+}
+
+select {
+  color: black;
+}
+
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding: 8px;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%; /* Or the width of your canvas */
+  height: 100%; /* Or the height of your canvas */
+}
+
+.pin-icon {
+  visibility: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  opacity: 0.6;
+  background-color: black;
+  border-radius: 50%;
+  padding: 10px;
+  text-align: center;
+  line-height: 1; /* Adjust as needed */
+}
+
+.grid-item:hover .pin-icon {
+  visibility: visible;
 }
