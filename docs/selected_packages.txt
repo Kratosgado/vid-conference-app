@@ -1,0 +1,11 @@
+## TechStack selected(rust packages)
+
+    - yew: A modern Rust framework for building multi-threaded front-end web apps with WebAssembly.
+    - actix-web: A powerful, high-performance web framework for Rust will be used to build WebSocket and REST API signaling server.
+    - `webrtc-rs`: A pure Rust impl of WebRTC
+    - media-stream: for access to media devices
+    - gstreamer-rs: for media processing
+    # Codecs and Formats
+    - h264-rs: Rust H.264 video codec implementation
+    - opus-codec: Rust wrapper around the Opus audio codec
+    - tokio: A runtime for writing asynchronours applications in Rust will provide networking, concurrency and I/O tasks handling.
