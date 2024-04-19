@@ -4,6 +4,7 @@ use yew_router::prelude::*;
 pub mod route;
 use route::Route;
 pub mod pages;
+pub mod components;
 
 struct App {}
 
