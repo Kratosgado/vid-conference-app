@@ -4,3 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+protobuf = "3.4.0"
+protobuf-codegen = "3.4.0"
