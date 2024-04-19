@@ -496,12 +496,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "boolinator"
-version = "2.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cfa8873f51c92e232f9bac4065cddef41b714152812bfc5f7672ba16d6ef8cd9"
-
-[[package]]
 name = "brotli"
 version = "3.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5874,8 +5868,7 @@ dependencies = [
 [[package]]
 name = "yew"
 version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f1a03f255c70c7aa3e9c62e15292f142ede0564123543c1cc0c7a4f31660cac"
+source = "git+https://github.com/yewstack/yew/#e9739fc9ce4944ba93c77a32072551ab771a2cda"
 dependencies = [
  "console_error_panic_hook",
  "futures 0.3.30",
@@ -5899,10 +5892,8 @@ dependencies = [
 [[package]]
 name = "yew-macro"
 version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02fd8ca5166d69e59f796500a2ce432ff751edecbbb308ca59fd3fe4d0343de2"
+source = "git+https://github.com/yewstack/yew/#e9739fc9ce4944ba93c77a32072551ab771a2cda"
 dependencies = [
- "boolinator",
  "once_cell 1.19.0",
  "prettyplease",
  "proc-macro-error",
