@@ -4,8 +4,6 @@ use yew_router::prelude::*;
 
 use crate::Route;
 
-const TEXT_INPUT_CLASSES: &str = "rounded-md mx-2 p-2 text-black required:ring-2 required:ring-red-500 required:valid:ring-2 required:valid:ring-green-500";
-
 #[function_component(Home)]
 pub fn home() -> Html {
     let navigator = use_navigator().unwrap();
@@ -33,9 +31,9 @@ pub fn home() -> Html {
                 <p class="text-xs">{ "Characters allowed: a-z, A-Z, 0-9, and _" }</p>
             </div>
             <form {onsubmit}>
-                <div class="py-4">
+                <div style="padding: 0.5rem 0rem;">
                     <input
-                        class="textinput"
+                        class="text-input"
                         label="username"
                         type="text"
                         placeholder="Username"
@@ -44,7 +42,7 @@ pub fn home() -> Html {
                         pattern="^[a-zA-Z0-9_]*$"
                     />
                     <input
-                        class={TEXT_INPUT_CLASSES}
+                        class="text-input"
                         label="meeting_id"
                         type="text"
                         placeholder="Meeting ID"
