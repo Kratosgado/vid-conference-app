@@ -1,41 +1,79 @@
 .appName {
-    display: flex;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
 }
 .top-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    background-color: black;
-    padding: 8px;
-  }
-  
-.navigators{
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  padding: 8px;
+}
+
+.navigators {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .navigators > a {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    transition: background-color 0.2s;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background-color 0.2s;
 }
-header  a:hover {
-    background-color: steelblue;
+header a:hover {
+  background-color: steelblue;
 }
 
-.textinput {
-    margin: 0px 2px;
-    padding: 2px;
-    color: black;
+.text-input {
+  margin: 0.5rem 0.5rem;
+  padding: 0.5rem;
+  color: black;
+  border-radius: 0.5rem;
+}
+.text-input:required {
+  box-shadow: 0 0 0 2px red;
+}
+
+.text-input:valid {
+  box-shadow: 0 0 0 2px green;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+form a {
+  text-decoration: none;
+  color: steelblue;
+  font-size: 1rem;
+}
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+input[type="submit"], .button {
+  background-color: steelblue;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  width: 100%;
 }
 /* 
+
+class="py-2 px-4 pointer bg-yew-blue rounded-md w-full cursor-pointer"
+
 const TEXT_INPUT_CLASSES: &str = "rounded-md mx-2 p-2 text-black required:ring-2 required:ring-red-500 required:valid:ring-2 required:valid:ring-green-500";
 
 <div class="flex justify-center items-center content-center flex-col m-auto">

@@ -6,6 +6,8 @@ use route::Route;
 pub mod pages;
 pub mod components;
 
+use components::topbar::TopBar;
+
 struct App {}
 
 impl Component for App {
@@ -26,6 +28,7 @@ impl Component for App {
         // info!("OAuth enabled: {}", *ENABLE_OAUTH);
         html! {
             <BrowserRouter>
+                <TopBar />
                 <Switch<Route> render={Route::switch}  />
             </BrowserRouter>
         }

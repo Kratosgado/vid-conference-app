@@ -5,6 +5,7 @@ use crate::pages::{
     login::Login,
     home::Home,
     signup::Signup,
+    profile::Profile,
 };
 use crate::components::topbar::TopBar;
 
@@ -26,7 +27,6 @@ impl Route {
             Route::Meeting1 => todo!(),
             Route::Meeting2 => todo!(),
             Route::Settings => todo!(),
-            Route::Profile => todo!(),
             Route::Home => html! { 
             <>
                 <TopBar />
@@ -36,7 +36,7 @@ impl Route {
             // Route::Meeting1 => html! { <pages::meeting1::Meeting1 /> },
             // Route::Meeting2 => html! { <pages::meeting2::Meeting2 /> },
             // Route::Settings => html! { <pages::settings::Settings /> },
-            // Route::Profile => html! { <pages::profile::Profile /> },
+            Route::Profile => html! { <Profile /> },
         }
     }
 }

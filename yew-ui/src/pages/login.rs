@@ -3,7 +3,6 @@ use yew_router::prelude::*;
 use web_sys::HtmlInputElement;
 
 use crate::route::Route;
-const TEXT_INPUT_CLASSES: &str = "rounded-md mx-2 p-2 text-black required:ring-2 required:ring-red-500 required:valid:ring-2 required:valid:ring-green-500";
 
 #[function_component(Login)]
 pub fn login() -> Html {
@@ -33,9 +32,9 @@ pub fn login() -> Html {
                 <h1>{ "Login" }</h1>
             </div> 
             <form onsubmit={onsubmit}>
-                    <div class="py-4">
+                    <div class="form-div">
                         <input 
-                        class={TEXT_INPUT_CLASSES}
+                        class="text-input"
                         ref={username_ref} 
                         type="text"
                         required={true}
@@ -45,7 +44,7 @@ pub fn login() -> Html {
                     />
                     <input 
                         ref={password_ref}
-                        class={TEXT_INPUT_CLASSES}
+                        class="text-input"
                         label="Password"
                         type="password_ref" 
                         placeholder="Password"
@@ -53,9 +52,11 @@ pub fn login() -> Html {
                         pattern="^[a-zA-Z0-9]{8,}$"
                         id="password"
                     />
-                </div>
+                </div>      
                     <input type="submit" value="LOGIN" class="py-2 px-4 pointer bg-yew-blue rounded-md w-full cursor-pointer" 
                     />
+                    <p>{"Do not have an account?"}
+                    <a href="/signup">{" Sign up"}</a></p>
                 </form>
         </div>
     }
