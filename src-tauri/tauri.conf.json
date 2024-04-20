@@ -2,7 +2,7 @@
   "build": {
     "beforeBuildCommand": "trunk build",
     "beforeDevCommand": "cd yew-ui && trunk serve",
-    "devPath": "http:localhost:8000",
+    "devPath": "http:127.0.0.1:8000",
     "distDir": "../yew-ui"
   },
   "package": {

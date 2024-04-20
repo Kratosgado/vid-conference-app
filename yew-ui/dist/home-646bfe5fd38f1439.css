@@ -1,0 +1,74 @@
+/* nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  font-weight: bold;
+} */
+
+.appName {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+.top-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    padding: 8px;
+  }
+  
+.navigators{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.navigators > a {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+header  a:hover {
+    background-color: steelblue;
+}
+/* 
+
+    
+    html!(
+        <nav class="flex justify-between items-center py-4 bg-gray-100">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold">{ "App Name" }</h1>
+            </div>
+            <div class="flex justify-center space-x-4">
+                <a href="/dashboard" class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">{"Home"}</a>
+                <a href="/team" class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">{"Team"}</a>
+                <a href="/projects" class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">{"Projects"}</a>
+                <a href="/reports" class="font-bold px-3 py-2 text-slate-700 rounded-lg hover:bg-slate-100 hover:text-slate-900">{"Reports"}</a>
+              
+                // <ul class="flex items-center">
+                //     <li class="mr-4">
+                //         <a href="#" onclick={navigate(Route::Home)}>{"Home"}</a>
+                //     </li>
+                //     <li class="mr-4">
+                //         <a href="#" onclick={navigate(Route::Meeting1)}>{"Meeting 1"}</a>
+                //     </li>
+                //     <li class="mr-4">
+                //         <a href="#" onclick={navigate(Route::Meeting2)}>{"Meeting 2"}</a>
+                //     </li>
+                //     <li class="mr-4">
+                //         <a href="#" onclick={navigate(Route::Settings)}>{"Settings"}</a>
+                //     </li>
+                //     <li class="mr-4">
+                //         <a href="#" onclick={navigate(Route::Profile)}>{"Profile"}</a>
+                //     </li>
+                // </ul>
+            </div>
+        </nav>
+    )
+} */
