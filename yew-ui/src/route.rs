@@ -27,11 +27,7 @@ impl Route {
             Route::Meeting1 => todo!(),
             Route::Meeting2 => todo!(),
             Route::Settings => todo!(),
-            Route::Home => html! { 
-            <>
-                <TopBar />
-                <Home />
-            </> },
+            Route::Home => html! {                <Home />},
             Route::Signup => html! { <Signup /> },
             // Route::Meeting1 => html! { <pages::meeting1::Meeting1 /> },
             // Route::Meeting2 => html! { <pages::meeting2::Meeting2 /> },
