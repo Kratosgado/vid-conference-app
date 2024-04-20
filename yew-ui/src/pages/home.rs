@@ -35,7 +35,7 @@ pub fn home() -> Html {
             <form {onsubmit}>
                 <div class="py-4">
                     <input
-                        class={TEXT_INPUT_CLASSES}
+                        class="textinput"
                         label="username"
                         type="text"
                         placeholder="Username"
