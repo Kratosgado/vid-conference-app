@@ -58,6 +58,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "actix-api"
+version = "0.1.0"
+dependencies = [
+ "actix 0.13.3",
+ "actix-cors",
+ "actix-diesel",
+ "actix-rt",
+ "actix-web",
+ "diesel 2.1.6",
+ "dotenv",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "actix-codec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -416,21 +431,6 @@ name = "autocfg"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f1fdabc7756949593fe60f30ec81974b613357de856987752631dea1e3394c80"
-
-[[package]]
-name = "backend"
-version = "0.1.0"
-dependencies = [
- "actix 0.13.3",
- "actix-cors",
- "actix-diesel",
- "actix-rt",
- "actix-web",
- "diesel 2.1.6",
- "dotenv",
- "serde",
- "serde_json",
-]
 
 [[package]]
 name = "backtrace"
