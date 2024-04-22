@@ -4,6 +4,8 @@ use std::env::var;
 use std::io;
 
 pub mod db;
+pub mod schema;
+
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     dotenv().ok();
@@ -12,10 +14,15 @@ async fn main() -> io::Result<()> {
         .expect("ACTIX_PORT must be set")
         .parse()
         .unwrap();
-    HttpServer::new(move || App::new().service(hello))
-        .bind((host, port))?
-        .run()
-        .await
+    
+    HttpServer::new(move || {
+        App::new()
+            .service(hello)
+            .service(web::scope("/users").configure(db::users::user_config))
+    })
+    .bind((host, port))?
+    .run()
+    .await
 }
 
 #[get("/")]
