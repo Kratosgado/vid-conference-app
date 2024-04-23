@@ -5,10 +5,9 @@ diesel::table! {
         id -> Varchar,
         #[max_length = 15]
         username -> Varchar,
-        #[max_length = 50]
+        #[max_length = 25]
         email -> Varchar,
-        #[max_length = 15]
         password -> Varchar,
-        salt -> Varchar
+        salt -> Varchar,
     }
 }
