@@ -1,4 +1,3 @@
-
 // The service module is where the business logic of the application is implemented.use actix_api::DbConn;
 
 use crate::db::models::User;
@@ -15,8 +14,6 @@ pub async fn sign_up(conn: &mut DbConn, sign_up_data: SignUpUser) -> HttpRespons
     let res = diesel::insert_into(users::table())
         .values(&sign_up_data)
         .execute(conn);
-
-
 
     match res {
         Ok(_) => {
