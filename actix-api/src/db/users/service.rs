@@ -32,15 +32,19 @@ pub async fn login(conn: &mut DbConn, login_data: LoginUser) -> HttpResponse {
     use crate::schema::users::dsl::*;
 
     log::info!("finding user with email: {}", login_data.email.clone());
-    let res = users
+    let res: Result<User, _> = users
         .filter(email.eq(&login_data.email))
-        .filter(password.eq(&login_data.password))
         .first::<User>(conn);
 
     match res {
-        Ok(_) => {
-            log::info!("user logged in successfully");
-            HttpResponse::Ok().finish()
+        Ok(user) => {
+            log::info!("user found...checking password");
+            if user.password == login_data.password {
+                log::info!("user logged in successfully");
+                return HttpResponse::Ok().finish();
+            }
+            log::warn!("cannot log in user");
+            HttpResponse::Unauthorized().finish()
         }
         Err(err) => {
             log::error!("{:?}", err);
