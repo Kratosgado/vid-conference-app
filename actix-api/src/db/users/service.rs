@@ -3,12 +3,13 @@
 use crate::db::models::User;
 
 use super::util::{LoginUser, SignUpUser};
-use actix_api::DbConn;
-use actix_web::HttpResponse;
-use diesel::prelude::*;
+use actix_api::{DbConn, DbPool};
+use actix_web::{web, HttpResponse};
+use diesel::{delete, prelude::*};
+use crate::schema::users::dsl::*;
+
 
 pub async fn sign_up(conn: &mut DbConn, sign_up_data: SignUpUser) -> HttpResponse {
-    use crate::schema::users::dsl::*;
 
     log::info!("creating user with data: {:?}", sign_up_data.clone());
     // let res = diesel::insert_into(users::table())
@@ -40,7 +41,6 @@ pub async fn sign_up(conn: &mut DbConn, sign_up_data: SignUpUser) -> HttpRespons
 
 // create function for login
 pub async fn login(conn: &mut DbConn, login_data: LoginUser) -> HttpResponse {
-    use crate::schema::users::dsl::*;
 
     log::info!("finding user with email: {}", login_data.email.clone());
     let res: Result<User, _> = users
@@ -60,6 +60,55 @@ pub async fn login(conn: &mut DbConn, login_data: LoginUser) -> HttpResponse {
             HttpResponse::Unauthorized().finish()
         }
         Err(err) => {
+            log::error!("{:?}", err);
+            HttpResponse::InternalServerError().finish()
+        }
+    }
+}
+
+pub async fn get_users(conn: &mut DbConn) -> HttpResponse {
+
+    log::info!("getting all users");
+    let res = users.load::<User>(conn);
+
+    match res {
+        Ok(rusers) => {
+            log::info!("users retrieved: {:?}", rusers.len());
+            HttpResponse::Ok().json(rusers)
+        }
+        Err(err) => {
+            log::error!("{:?}", err);
+            HttpResponse::InternalServerError().finish()
+        }
+    }
+}
+
+pub async fn get_user_by_id(conn: &mut DbConn, user_id: String) -> HttpResponse {
+    let user = users.find(user_id).get_result::<User>(conn);
+    match user {
+        Ok(user ) => {
+            log::info!("user found");
+            HttpResponse::Ok().json(user)
+        },
+        Err(err) => {
+            log::error!("User not found: {:?}", err);
+            HttpResponse::NotFound().finish()
+        }
+    }
+}
+
+pub async fn delete_user(pool: web::Data<DbPool>, user_id: String) -> HttpResponse {
+
+    let mut conn: DbConn = pool.get().unwrap();
+
+    let count = delete(users.find(user_id)).execute(&mut conn);
+
+    match count {
+        Ok(_) => {
+            log::info!("user deleted successfully");
+            HttpResponse::Ok().finish()
+        },
+        Err(err ) => {
             log::error!("{:?}", err);
             HttpResponse::InternalServerError().finish()
         }

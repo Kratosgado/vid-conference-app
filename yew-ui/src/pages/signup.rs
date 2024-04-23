@@ -1,6 +1,6 @@
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use web_sys::HtmlInputElement;
 
 use crate::route::Route;
 
@@ -27,37 +27,37 @@ pub fn signup() -> Html {
         })
     };
 
-    html!{
+    html! {
         <div class="flex justify-center items-center content-center flex-col m-auto">
             <div class="flex items-center flex-col">
                 <h1>{ "Signup" }</h1>
-            </div> 
+            </div>
             <form onsubmit={onsubmit}>
                 <div>
-                    <input 
+                    <input
                         class="text-input"
-                        ref={username_ref} 
+                        ref={username_ref}
                         type="text"
                         required={true}
                         placeholder="Username"
                         pattern="^[a-zA-Z0-9]{6,}$"
-                        id="username" 
+                        id="username"
                     />
-                    <input 
+                    <input
                         ref={email_ref}
                         class="text-input"
                         label="Email"
-                        type="email" 
+                        type="email"
                         placeholder="Email"
                         required={true}
                         pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+[a-zA-Z]{2,}$"
                         id="email"
                     />
-                    <input 
+                    <input
                         ref={password_ref}
                         class="text-input"
                         label="Password"
-                        type="password" 
+                        type="password"
                         placeholder="Password"
                         required={true}
                         pattern="^[a-zA-Z0-9]{8,}$"
