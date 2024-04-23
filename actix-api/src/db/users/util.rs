@@ -2,7 +2,7 @@ use crate::schema::users;
 use diesel::prelude::*;
 use serde::Deserialize;
 
-#[derive(Deserialize, Insertable)]
+#[derive(Deserialize, Insertable, Clone, Debug)]
 #[diesel(table_name = users)]
 pub struct SignUpUser {
     pub username: String,

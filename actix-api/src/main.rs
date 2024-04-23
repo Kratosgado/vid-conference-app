@@ -1,13 +1,9 @@
-use actix_web::{get, middleware, web, App, HttpResponse, HttpServer};
-use diesel::{pg, r2d2, PgConnection};
-use std::io;
+use actix_api::DbManager;
+use actix_web::{get, web, App, HttpResponse, HttpServer};
+use diesel::{ r2d2, PgConnection};
 
 pub mod db;
 pub mod schema;
-
-pub type DbPool = diesel::r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::PgConnection>>;
-pub type DbConn = diesel::r2d2::PooledConnection<diesel::r2d2::ConnectionManager<diesel::PgConnection>>;
-type DbManager = diesel::r2d2::ConnectionManager<diesel::PgConnection>;
 
 #[actix_web::main]
 async fn main() {
@@ -30,9 +26,9 @@ async fn main() {
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
-            .wrap(middleware::Logger::default())
+            // .wrap(middleware::Logger::new("\"%r\" %s %D"))
             .service(hello)
-            .service(web::scope("users").configure(db::users::user_config))
+            .service(web::scope("/users").configure(db::users::user_config))
             .default_service(web::route().to(|| HttpResponse::NotFound()))
     })
     .bind((host.clone(), port.clone()))
@@ -44,5 +40,6 @@ async fn main() {
 
 #[get("/")]
 async fn hello() -> HttpResponse {
+    log::info!("Hello world!");
     HttpResponse::Ok().body("Hello world!")
 }
