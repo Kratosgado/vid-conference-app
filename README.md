@@ -38,6 +38,7 @@ A zoom-like application with additional features to for online class
 
     - yew: A modern Rust framework for building multi-threaded front-end web apps with WebAssembly.
     - actix-web: A powerful, high-performance web framework for Rust will be used to build WebSocket and REST API signaling server.
+    - argon2: to hash passwords
     - `webrtc-rs`: A pure Rust impl of WebRTC
     - media-stream: for access to media devices
     - gstreamer-rs: for media processing
