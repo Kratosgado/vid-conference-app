@@ -1,9 +1,6 @@
-use crate::schema::users;
-use diesel::prelude::*;
 use serde::Deserialize;
 
-#[derive(Deserialize, Insertable, Clone, Debug)]
-#[diesel(table_name = users)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct SignUpUser {
     pub username: String,
     pub email: String,
