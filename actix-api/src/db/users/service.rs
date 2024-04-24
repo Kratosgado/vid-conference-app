@@ -65,7 +65,9 @@ pub async fn login(
                     session.insert(user.id, Role::User).unwrap();
                 }
                 log::info!("user logged in successfully");
-                return HttpResponse::Ok().finish();
+                return HttpResponse::Ok().json({
+                    crate::db::auth::generate_token(user.username.clone())
+                });
             }
             log::warn!("cannot log in user");
             HttpResponse::Unauthorized().finish()
