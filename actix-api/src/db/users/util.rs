@@ -1,4 +1,3 @@
-use actix_jwt_auth_middleware::FromRequest;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Clone, Debug)]
@@ -12,12 +11,13 @@ pub struct SignUpUser {
 pub struct LoginUser {
     pub email: String,
     pub password: String,
+    pub exp: i64,
 }
 
-#[derive(Serialize, Deserialize, Clone, FromRequest)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct UserClaims {
-    pub user_id: String,
-    role: Role,
+    pub username: String,
+    pub exp: usize,
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
