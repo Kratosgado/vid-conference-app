@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use actix_jwt_auth_middleware::FromRequest;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct SignUpUser {
@@ -20,8 +20,8 @@ pub struct UserClaims {
     role: Role,
 }
 
-#[derive(Clone, Serialize, Deserialize, Debug,)]
-enum Role {
+#[derive(Clone, Serialize, Deserialize, Debug)]
+pub enum Role {
     Admin,
     User,
 }

@@ -10,6 +10,7 @@ actix-diesel = "0.3.0"
 actix-jwt-auth-middleware = "0.5.0"
 actix-rt = "2.9.0"
 actix-service = "2.0.2"
+actix-session = { version = "0.9.0", features = ["redis-rs-session", "redis-rs-tls-session"] }
 actix-web = "4.5.1"
 actix-web-httpauth = "0.8.1"
 alcoholic_jwt = "4091.0.0"
