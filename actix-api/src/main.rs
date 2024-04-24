@@ -1,6 +1,6 @@
 use actix_api::DbPool;
-use actix_session::{storage::RedisSessionStore, Session, SessionMiddleware};
-use actix_web::{cookie::Key, web, App, HttpResponse, HttpServer};
+use actix_session::SessionMiddleware;
+use actix_web::{web, App, HttpResponse, HttpServer};
 
 pub mod db;
 pub mod schema;
@@ -24,7 +24,6 @@ async fn main() {
         App::new()
             .wrap(SessionMiddleware::new(redis_store.clone(), key.clone()))
             .app_data(web::Data::new(pool.clone()))
-            // .wrap(middleware::Logger::new("\"%r\" %s %D"))
             .service(web::scope("/users").configure(db::users::user_config))
             .default_service(web::to(|| HttpResponse::Ok()))
     })

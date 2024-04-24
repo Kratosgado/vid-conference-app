@@ -1,7 +1,6 @@
-
-use actix_web::{dev::ServiceRequest, Error, HttpMessage};
+use actix_web::{Error, HttpRequest};
 use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHash,PasswordVerifier, PasswordHasher, SaltString},
+    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
 use jsonwebtoken::{encode, DecodingKey, EncodingKey, Header, Validation};
@@ -31,38 +30,48 @@ pub fn verify_password(password: &String, hash: &String) -> bool {
 }
 
 pub fn generate_token(username: String) -> String {
+    log::info!("generating token for user: {}", username);
     let secret = std::env::var("JWT_KEY").expect("JWT_KEY must be set");
     let expiration = std::env::var("JWT_EXPIRATION")
         .expect("JWT_EXPIRATION must be set")
         .parse::<usize>()
         .expect("JWT_EXPIRATION must be an integer");
-    
+
     let claims = UserClaims {
         username: username,
         exp: expiration,
     };
 
-    encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes())).unwrap()
-
+    encode(
+        &Header::default(),
+        &claims,
+        &EncodingKey::from_secret(secret.as_bytes()),
+    )
+    .unwrap()
 }
 
-pub fn authenticate(req: ServiceRequest) -> Result<ServiceRequest, Error> {
+pub async fn authenticate(req: HttpRequest) -> Result<UserClaims, Error> {
+    log::info!("authenticating user");
     let token = req.headers().get("Authorization").and_then(|header| {
-        header.to_str().ok().map(|token| token.replace("Bearer ", ""))
+        header
+            .to_str()
+            .ok()
+            .map(|token| token.replace("Bearer ", ""))
     });
 
-    if let Some(token ) = token {
+    if let Some(token) = token {
+        log::info!("token: {}", token);
         let secret = std::env::var("JWT_KEY").expect("JWT_KEY must be set");
         let validation = Validation::default();
-        match jsonwebtoken::decode::<UserClaims>(&token, &DecodingKey::from_secret(secret.as_bytes()), &validation) {
-            Ok(claims) => {
-                req.extensions_mut().insert(claims.claims);
-                Ok(req)
-            },
+        match jsonwebtoken::decode::<UserClaims>(
+            &token,
+            &DecodingKey::from_secret(secret.as_bytes()),
+            &validation,
+        ) {
+            Ok(claims) => Ok(claims.claims),
             Err(_) => Err(actix_web::error::ErrorUnauthorized("Invalid token")),
         }
     } else {
         Err(actix_web::error::ErrorUnauthorized("Missing token"))
     }
-    
 }

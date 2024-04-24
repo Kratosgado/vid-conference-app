@@ -8,6 +8,7 @@ use actix_api::{DbConn, DbPool};
 use actix_session::Session;
 use actix_web::{web, HttpResponse};
 use diesel::{delete, prelude::*};
+use serde_json::json;
 
 pub async fn sign_up(pool: &web::Data<DbPool>, sign_up_data: SignUpUser) -> HttpResponse {
     log::info!("creating user with data: {:?}", sign_up_data.clone());
@@ -60,13 +61,14 @@ pub async fn login(
             log::info!("user found...checking password");
             if verify_password(&login_data.password, &user.password) {
                 if user.username == "admin" {
-                    session.insert("admin", Role::Admin).unwrap();
+                    session.insert(user.username.clone(), Role::Admin).unwrap();
                 } else {
                     session.insert(user.id, Role::User).unwrap();
                 }
                 log::info!("user logged in successfully");
                 return HttpResponse::Ok().json({
-                    crate::db::auth::generate_token(user.username.clone())
+                    let token = crate::db::auth::generate_token(user.username);
+                    json!({ "token": token })
                 });
             }
             log::warn!("cannot log in user");
@@ -79,8 +81,7 @@ pub async fn login(
     }
 }
 
-pub async fn get_users( pool: &web::Data<DbPool>) -> HttpResponse {
-    
+pub async fn get_users(pool: &web::Data<DbPool>) -> HttpResponse {
     let mut conn: DbConn = pool.get().unwrap();
 
     log::info!("getting all users");
