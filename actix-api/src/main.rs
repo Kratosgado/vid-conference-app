@@ -1,6 +1,5 @@
-use actix_api::DbManager;
+use actix_api::DbPool;
 use actix_web::{get, web, App, HttpResponse, HttpServer};
-use diesel::{ r2d2, PgConnection};
 
 pub mod db;
 pub mod schema;
@@ -16,12 +15,9 @@ async fn main() {
         .expect("ACTIX_PORT must be set")
         .parse()
         .unwrap();
-    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
-    let manager: DbManager = r2d2::ConnectionManager::<PgConnection>::new(database_url);
-    let pool = r2d2::Pool::builder()
-        .build(manager)
-        .expect("Failed to create pool");
+
+    let pool: DbPool = db::create_pool();
 
     let server = HttpServer::new(move || {
         App::new()

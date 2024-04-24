@@ -87,10 +87,13 @@ pub async fn get_users(pool: &web::Data<DbPool>) -> HttpResponse {
     }
 }
 
-pub async fn get_user_by_id(pool: &web::Data<DbPool>, user_id: String) -> HttpResponse {
-    let mut conn: DbConn = pool.get().unwrap();
+pub async fn get_user_by_id(pool: web::Data<DbPool>, user_id: String) -> HttpResponse {
+    let user = web::block(move || {
+        let mut conn: DbConn = pool.get().unwrap();
 
-    let user = users.find(user_id).get_result::<User>(&mut conn);
+        let user = users.find(user_id).get_result::<User>(&mut conn);
+        user
+    }).await.unwrap();
     match user {
         Ok(user ) => {
             log::info!("user found");
