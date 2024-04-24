@@ -3,7 +3,7 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
-use jsonwebtoken::{encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{encode, get_current_timestamp, DecodingKey, EncodingKey, Header, Validation};
 
 use super::users::util::UserClaims;
 
@@ -29,25 +29,30 @@ pub fn verify_password(password: &String, hash: &String) -> bool {
         .is_ok()
 }
 
-pub fn generate_token(username: String) -> String {
-    log::info!("generating token for user: {}", username);
+pub fn generate_token(email: String) -> Result<String, Error> {
+    log::info!("generating token for user: {}", email);
     let secret = std::env::var("JWT_KEY").expect("JWT_KEY must be set");
-    let expiration = std::env::var("JWT_EXPIRATION")
-        .expect("JWT_EXPIRATION must be set")
-        .parse::<usize>()
-        .expect("JWT_EXPIRATION must be an integer");
 
-    let claims = UserClaims {
-        username: username,
-        exp: expiration,
-    };
+    let iat = seconds_since_epoch();
+    let exp = expiry(iat, SECONDS_VALID_FOR);
 
-    encode(
+    let claims = UserClaims { email, exp, iat };
+    log::info!("original iat: {}", claims.iat);
+    log::info!("original exp: {}", claims.exp);
+
+    let token = match encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(secret.as_bytes()),
-    )
-    .unwrap()
+        &EncodingKey::from_secret(secret.as_ref()),
+    ) {
+        Ok(token) => Ok(token),
+        Err(err) => {
+            log::error!("Failed to encode token. Error: {}", err.to_string());
+            return Err(actix_web::error::ErrorUnauthorized(err.to_string()));
+        }
+    };
+
+    token
 }
 
 pub async fn authenticate(req: HttpRequest) -> Result<UserClaims, Error> {
@@ -62,16 +67,36 @@ pub async fn authenticate(req: HttpRequest) -> Result<UserClaims, Error> {
     if let Some(token) = token {
         log::info!("token: {}", token);
         let secret = std::env::var("JWT_KEY").expect("JWT_KEY must be set");
-        let validation = Validation::default();
+        let mut validation = Validation::default();
+        validation.leeway = 0;
+        let sleep_time = std::time::Duration::from_secs(SECONDS_TO_SLEEP);
+        std::thread::sleep(sleep_time);
+
         match jsonwebtoken::decode::<UserClaims>(
             &token,
-            &DecodingKey::from_secret(secret.as_bytes()),
+            &DecodingKey::from_secret(secret.as_ref()),
             &validation,
         ) {
             Ok(claims) => Ok(claims.claims),
-            Err(_) => Err(actix_web::error::ErrorUnauthorized("Invalid token")),
+            Err(err) => {
+                log::error!("Error decoding token: {:?}", err);
+                Err(actix_web::error::ErrorUnauthorized(err.to_string()))
+            }
         }
     } else {
         Err(actix_web::error::ErrorUnauthorized("Missing token"))
     }
+}
+
+pub const SECONDS_VALID_FOR: u64 = 3600;
+pub const SECONDS_TO_SLEEP: u64 = 4;
+
+pub const SECRET_KEY: &str = "007: The Spy Who Loved Me";
+
+pub fn expiry(secs_since_epoch: u64, secs_valid_for: u64) -> u64 {
+    secs_since_epoch + secs_valid_for
+}
+
+pub fn seconds_since_epoch() -> u64 {
+    get_current_timestamp()
 }

@@ -1,3 +1,4 @@
+use jsonwebtoken::get_current_timestamp;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Clone, Debug)]
@@ -15,8 +16,9 @@ pub struct LoginUser {
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct UserClaims {
-    pub username: String,
-    pub exp: usize,
+    pub iat: u64,
+    pub exp: u64,
+    pub email: String,
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]

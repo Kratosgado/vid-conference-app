@@ -44,15 +44,19 @@ pub async fn sign_up(pool: &web::Data<DbPool>, sign_up_data: SignUpUser) -> Http
 // create function for login
 pub async fn login(
     session: Session,
-    pool: &web::Data<DbPool>,
+    pool: web::Data<DbPool>,
     login_data: LoginUser,
 ) -> HttpResponse {
     log::info!("finding user with email: {}", login_data.email.clone());
-    let mut conn: DbConn = pool.get().unwrap();
+    let res = web::block(move || {
+        let mut conn: DbConn = pool.get().unwrap();
 
-    let res: Result<User, _> = users
-        .filter(email.eq(&login_data.email))
-        .first::<User>(&mut conn);
+        users
+            .filter(email.eq(&login_data.email))
+            .first::<User>(&mut conn)
+    })
+    .await
+    .unwrap();
 
     match res {
         Ok(user) => {
@@ -61,15 +65,16 @@ pub async fn login(
             log::info!("user found...checking password");
             if verify_password(&login_data.password, &user.password) {
                 if user.username == "admin" {
-                    session.insert(user.username.clone(), Role::Admin).unwrap();
+                    log::info!("updating session");
+                    session.insert(user.email.clone(), Role::Admin).unwrap()
                 } else {
-                    session.insert(user.id, Role::User).unwrap();
+                    session.insert(user.email.clone(), Role::User).unwrap();
                 }
                 log::info!("user logged in successfully");
-                return HttpResponse::Ok().json({
-                    let token = crate::db::auth::generate_token(user.username);
-                    json!({ "token": token })
-                });
+                match crate::db::auth::generate_token(user.email) {
+                    Ok(token) => return HttpResponse::Ok().json(token),
+                    Err(err) => return HttpResponse::from_error(err),
+                }
             }
             log::warn!("cannot log in user");
             HttpResponse::Unauthorized().finish()
