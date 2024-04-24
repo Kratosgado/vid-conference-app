@@ -1,4 +1,7 @@
 use actix_api::{DbConn, DbPool};
+use actix_session::Session;
+
+use crate::db::users::util::Role;
 
 use super::{
     service,
@@ -14,16 +17,28 @@ pub async fn sign_up(pool: web::Data<DbPool>, req: web::Json<SignUpUser>) -> Htt
 }
 
 #[post("/login")]
-pub async fn login(pool: web::Data<DbPool>, req: web::Json<LoginUser>) -> HttpResponse {
+pub async fn login(
+    session: Session,
+    pool: web::Data<DbPool>,
+    req: web::Json<LoginUser>,
+) -> HttpResponse {
     log::info!("logging in user");
-    service::login(&pool, req.into_inner()).await
+    service::login(session, &pool, req.into_inner()).await
 }
 
 #[get("/")]
-pub async fn get_users(pool: web::Data<DbPool>) -> HttpResponse {
+pub async fn get_users(session: Session, pool: web::Data<DbPool>) -> HttpResponse {
     log::info!("getting all users");
-
-    service::get_users(&pool).await
+    match session.get::<Role>("admin") {
+        Ok(role) => {
+            log::info!("role: {:?}", role.clone());
+            if let Some(Role::Admin) = role {
+                return service::get_users(&pool).await;
+            }
+            HttpResponse::Unauthorized().finish()
+        }
+        Err(_) => HttpResponse::Unauthorized().finish(),
+    }
 }
 
 #[get("/{id}")]
