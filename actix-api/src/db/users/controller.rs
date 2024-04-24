@@ -30,7 +30,7 @@ pub async fn get_users(pool: web::Data<DbPool>) -> HttpResponse {
 pub async fn get_user(pool: web::Data<DbPool>, user_id: web::Path<String>) -> HttpResponse {
     log::info!("getting user by user id: {}", user_id);
 
-    service::get_user_by_id(&pool, user_id.into_inner()).await
+    service::get_user_by_id(pool, user_id.into_inner()).await
 }
 
 // #[put("/{id}")]

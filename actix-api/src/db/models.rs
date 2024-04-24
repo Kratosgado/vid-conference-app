@@ -1,4 +1,5 @@
 use crate::schema::users;
+use actix_jwt_auth_middleware::FromRequest;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 

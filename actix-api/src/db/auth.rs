@@ -1,3 +1,4 @@
+
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash,PasswordVerifier, PasswordHasher, SaltString},
     Argon2,
@@ -25,3 +26,4 @@ pub fn verify_password(password: &String, hash: &String) -> bool {
         .verify_password(password.as_bytes(), &password_hash)
         .is_ok()
 }
+
