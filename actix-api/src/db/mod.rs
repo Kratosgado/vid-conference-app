@@ -1,7 +1,6 @@
 use actix_api::{DbManager, DbPool};
-use actix_session::{storage::RedisSessionStore, SessionMiddleware};
+use actix_session::storage::RedisSessionStore;
 use diesel::{r2d2, PgConnection};
-use redis::{Client, Connection};
 
 pub mod auth;
 pub mod models;

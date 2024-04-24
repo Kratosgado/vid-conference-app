@@ -11,7 +11,6 @@ pub struct SignUpUser {
 pub struct LoginUser {
     pub email: String,
     pub password: String,
-    pub exp: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
