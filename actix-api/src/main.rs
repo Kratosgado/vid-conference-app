@@ -16,18 +16,13 @@ async fn main() {
         .expect("ACTIX_PORT must be set")
         .parse()
         .unwrap();
-    let redis_url = std::env::var("REDIS_URL").expect("REDIS_URL must be set");
 
-    let redis_store = RedisSessionStore::new(redis_url).await.unwrap();
-    let secret_key = Key::generate();
     let pool: DbPool = db::create_pool();
+    let (redis_store , key) = db::create_redis_middleware().await;
 
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(SessionMiddleware::new(
-                redis_store.clone(),
-                secret_key.clone(),
-            ))
+            .wrap(SessionMiddleware::new(redis_store.clone(), key.clone()))
             .app_data(web::Data::new(pool.clone()))
             // .wrap(middleware::Logger::new("\"%r\" %s %D"))
             .service(web::scope("/users").configure(db::users::user_config))

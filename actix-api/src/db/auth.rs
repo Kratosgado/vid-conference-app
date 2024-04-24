@@ -1,9 +1,10 @@
 
+use actix_web::{dev::ServiceRequest, Error, HttpMessage};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash,PasswordVerifier, PasswordHasher, SaltString},
     Argon2,
 };
-use jsonwebtoken::{encode, EncodingKey, Header};
+use jsonwebtoken::{encode, DecodingKey, EncodingKey, Header, Validation};
 
 use super::users::util::UserClaims;
 
@@ -43,4 +44,25 @@ pub fn generate_token(username: String) -> String {
 
     encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes())).unwrap()
 
+}
+
+pub fn authenticate(req: ServiceRequest) -> Result<ServiceRequest, Error> {
+    let token = req.headers().get("Authorization").and_then(|header| {
+        header.to_str().ok().map(|token| token.replace("Bearer ", ""))
+    });
+
+    if let Some(token ) = token {
+        let secret = std::env::var("JWT_KEY").expect("JWT_KEY must be set");
+        let validation = Validation::default();
+        match jsonwebtoken::decode::<UserClaims>(&token, &DecodingKey::from_secret(secret.as_bytes()), &validation) {
+            Ok(claims) => {
+                req.extensions_mut().insert(claims.claims);
+                Ok(req)
+            },
+            Err(_) => Err(actix_web::error::ErrorUnauthorized("Invalid token")),
+        }
+    } else {
+        Err(actix_web::error::ErrorUnauthorized("Missing token"))
+    }
+    
 }

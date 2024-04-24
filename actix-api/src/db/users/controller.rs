@@ -1,13 +1,13 @@
 use actix_api::{DbConn, DbPool};
 use actix_session::Session;
 
-use crate::db::users::util::Role;
+use crate::db::users::util::{Role, UserClaims};
 
 use super::{
     service,
     util::{LoginUser, SignUpUser},
 };
-use actix_web::{delete, get, post, web, HttpResponse};
+use actix_web::{delete, dev::ServiceRequest, get, post, web, HttpMessage, HttpRequest, HttpResponse};
 
 #[post("/signup")]
 pub async fn sign_up(pool: web::Data<DbPool>, req: web::Json<SignUpUser>) -> HttpResponse {
@@ -27,9 +27,11 @@ pub async fn login(
 }
 
 #[get("/")]
-pub async fn get_users(session: Session, pool: web::Data<DbPool>) -> HttpResponse {
+pub async fn get_users(session: Session, req: HttpRequest, pool: web::Data<DbPool>) -> HttpResponse {
     log::info!("getting all users");
-    match session.get::<Role>("admin") {
+    let extensions = req.extensions();
+    let claims = extensions.get::<UserClaims>().unwrap();
+    match session.get::<Role>(&claims.username) {
         Ok(role) => {
             log::info!("role: {:?}", role.clone());
             if let Some(Role::Admin) = role {
