@@ -22,7 +22,7 @@ pub struct UserClaims {
     pub role: Role,
 }
 
-#[derive(Clone, Serialize, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
 pub enum Role {
     Admin,
     User,
