@@ -1,4 +1,3 @@
-use jsonwebtoken::get_current_timestamp;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Clone, Debug)]
