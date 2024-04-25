@@ -56,18 +56,6 @@ pub async fn get_user(pool: web::Data<DbPool>, user_id: web::Path<String>) -> Ht
     service::get_user_by_id(pool, user_id.into_inner()).await
 }
 
-// #[put("/{id}")]
-// pub async fn update_user(
-//     pool: web::Data<DbPool>,
-//     web::Path(id): web::Path<String>,
-//     req: web::Json<SignUpUser>,
-// ) -> HttpResponse {
-//     log::info!("updating user by id: {}", id);
-//     let mut conn: DbConn = pool.get().expect("couldn't get db connection from pool");
-
-//     service::update_user(&mut conn, id, req.into_inner()).await
-// }
-
 #[delete("/{id}")]
 pub async fn delete_user(pool: web::Data<DbPool>, user_id: web::Path<String>) -> HttpResponse {
     log::info!("deleting user by id: {:?}", user_id);

@@ -5,7 +5,7 @@ use argon2::{
 };
 use jsonwebtoken::{encode, get_current_timestamp, DecodingKey, EncodingKey, Header, Validation};
 
-use super::users::util::UserClaims;
+use super::users::util::{Role, UserClaims};
 
 pub fn hash_password(password: &str) -> (String, String) {
     let salt_str = SaltString::generate(&mut OsRng);
@@ -29,14 +29,14 @@ pub fn verify_password(password: &String, hash: &String) -> bool {
         .is_ok()
 }
 
-pub fn generate_token(email: String) -> Result<String, Error> {
+pub fn generate_token(email: String, role: Role) -> Result<String, Error> {
     log::info!("generating token for user: {}", email);
     let secret = std::env::var("JWT_KEY").expect("JWT_KEY must be set");
 
     let iat = seconds_since_epoch();
     let exp = expiry(iat, SECONDS_VALID_FOR);
 
-    let claims = UserClaims { email, exp, iat };
+    let claims = UserClaims { email, role , exp, iat };
     log::info!("original iat: {}", claims.iat);
     log::info!("original exp: {}", claims.exp);
 
