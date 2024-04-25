@@ -5,12 +5,16 @@ use crate::db::{auth, models::User, users::util::Role};
 use super::util::{LoginUser, SignUpUser};
 use crate::schema::users::dsl::*;
 use actix_api::{DbConn, DbPool};
-use actix_session::Session;
 use actix_web::{web, HttpResponse};
 use diesel::{delete, prelude::*};
-use serde_json::json;
 
-pub async fn sign_up(pool: &web::Data<DbPool>, sign_up_data: SignUpUser) -> HttpResponse {
+/// Create a new user. and inserts it to database.
+///
+/// returns a 201 Created response if successful.
+///
+/// returns a 500 Internal Server Error response if an error occurs.
+/// Panics if .
+pub async fn sign_up(pool: web::Data<DbPool>, sign_up_data: SignUpUser) -> HttpResponse {
     log::info!("creating user with data: {:?}", sign_up_data.clone());
 
     let (password_hash, salt_str) = crate::db::auth::hash_password(&sign_up_data.password);
@@ -22,13 +26,14 @@ pub async fn sign_up(pool: &web::Data<DbPool>, sign_up_data: SignUpUser) -> Http
         password: password_hash,
         salt: salt_str,
     };
+    let res = web::block(move || {
+        let mut conn: DbConn = pool.get().unwrap();
 
-    let mut conn: DbConn = pool.get().unwrap();
-
-    let res = diesel::insert_into(users)
-        .values(&new_user)
-        .execute(&mut conn);
-
+        diesel::insert_into(users)
+            .values(&new_user)
+            .execute(&mut conn)
+    })
+    .await;
     match res {
         Ok(_) => {
             log::info!("user created successfully");
@@ -42,25 +47,20 @@ pub async fn sign_up(pool: &web::Data<DbPool>, sign_up_data: SignUpUser) -> Http
 }
 
 // create function for login
-pub async fn login(
-    session: Session,
-    pool: web::Data<DbPool>,
-    login_data: LoginUser,
-) -> HttpResponse {
+pub async fn login(pool: web::Data<DbPool>, login_data: LoginUser) -> HttpResponse {
     log::info!("finding user with email: {}", login_data.email.clone());
     let res = web::block(move || {
         let mut conn: DbConn = pool.get().unwrap();
-
         users
             .filter(email.eq(&login_data.email))
             .first::<User>(&mut conn)
     })
-    .await
-    .unwrap();
+    .await;
 
     match res {
-        Ok(user) => {
+        Ok(ok_res) => {
             log::info!("user found...checking password");
+            let user = ok_res.unwrap();
             if auth::verify_password(&login_data.password, &user.password) {
                 let role = if user.username == "admin" {
                     Role::Admin
@@ -83,14 +83,17 @@ pub async fn login(
     }
 }
 
-pub async fn get_users(pool: &web::Data<DbPool>) -> HttpResponse {
-    let mut conn: DbConn = pool.get().unwrap();
-
+pub async fn get_users(pool: web::Data<DbPool>) -> HttpResponse {
     log::info!("getting all users");
-    let res = users.load::<User>(&mut conn);
+    let res = web::block(move || {
+        let mut conn: DbConn = pool.get().unwrap();
+        users.load::<User>(&mut conn)
+    })
+    .await;
 
     match res {
-        Ok(rusers) => {
+        Ok(res) => {
+            let rusers = res.unwrap();
             log::info!("users retrieved: {:?}", rusers.len());
             HttpResponse::Ok().json(rusers)
         }
@@ -102,16 +105,16 @@ pub async fn get_users(pool: &web::Data<DbPool>) -> HttpResponse {
 }
 
 pub async fn get_user_by_id(pool: web::Data<DbPool>, user_id: String) -> HttpResponse {
-    let user = web::block(move || {
+    let res = web::block(move || {
         let mut conn: DbConn = pool.get().unwrap();
 
         let user = users.find(user_id).get_result::<User>(&mut conn);
         user
     })
-    .await
-    .unwrap();
-    match user {
+    .await;
+    match res {
         Ok(user) => {
+            let user = user.unwrap();
             log::info!("user found");
             HttpResponse::Ok().json(user)
         }
@@ -122,10 +125,12 @@ pub async fn get_user_by_id(pool: web::Data<DbPool>, user_id: String) -> HttpRes
     }
 }
 
-pub async fn delete_user(pool: &web::Data<DbPool>, user_id: String) -> HttpResponse {
-    let mut conn: DbConn = pool.get().unwrap();
+pub async fn delete_user(pool: web::Data<DbPool>, user_id: String) -> HttpResponse {
+    let count = web::block(move || {
+        let mut conn: DbConn = pool.get().unwrap();
 
-    let count = delete(users.find(user_id)).execute(&mut conn);
+        delete(users.find(user_id)).execute(&mut conn)
+    }).await;
 
     match count {
         Ok(_) => {
