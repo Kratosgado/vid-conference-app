@@ -1,6 +1,6 @@
 // The service module is where the business logic of the application is implemented.use actix_api::DbConn;
 
-use crate::db::{models::User, users::util::Role};
+use crate::db::{auth, models::User, users::util::Role};
 
 use super::util::{LoginUser, SignUpUser};
 use crate::schema::users::dsl::*;
@@ -60,18 +60,15 @@ pub async fn login(
 
     match res {
         Ok(user) => {
-            use crate::db::auth::verify_password;
-
             log::info!("user found...checking password");
-            if verify_password(&login_data.password, &user.password) {
-                if user.username == "admin" {
-                    log::info!("updating session");
-                    session.insert(user.email.clone(), Role::Admin).unwrap()
+            if auth::verify_password(&login_data.password, &user.password) {
+                let role = if user.username == "admin" {
+                    Role::Admin
                 } else {
-                    session.insert(user.email.clone(), Role::User).unwrap();
-                }
+                    Role::User
+                };
                 log::info!("user logged in successfully");
-                match crate::db::auth::generate_token(user.email) {
+                match auth::generate_token(user.email, role) {
                     Ok(token) => return HttpResponse::Ok().json(token),
                     Err(err) => return HttpResponse::from_error(err),
                 }
