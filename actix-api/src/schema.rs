@@ -8,6 +8,5 @@ diesel::table! {
         #[max_length = 25]
         email -> Varchar,
         password -> Varchar,
-        salt -> Varchar,
     }
 }

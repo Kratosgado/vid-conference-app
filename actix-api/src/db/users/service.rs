@@ -24,7 +24,6 @@ pub async fn sign_up(pool: web::Data<DbPool>, sign_up_data: SignUpUser) -> HttpR
         username: sign_up_data.username.clone(),
         email: sign_up_data.email.clone(),
         password: password_hash,
-        salt: salt_str,
     };
     let res = web::block(move || {
         let mut conn: DbConn = pool.get().unwrap();
