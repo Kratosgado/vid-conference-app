@@ -1,15 +1,8 @@
+use super::service;
+use actix_api::auth;
 use actix_api::DbPool;
-
-use crate::db::{
-    auth,
-    users::util::Role,
-};
-
-use super::{
-    service,
-    util::{LoginUser, SignUpUser},
-};
 use actix_web::{delete, get, post, web, HttpRequest, HttpResponse};
+use types::users::{LoginUser, Role, SignUpUser, UserClaims};
 
 #[post("/signup")]
 pub async fn sign_up(pool: web::Data<DbPool>, req: web::Json<SignUpUser>) -> HttpResponse {
@@ -19,10 +12,7 @@ pub async fn sign_up(pool: web::Data<DbPool>, req: web::Json<SignUpUser>) -> Htt
 }
 
 #[post("/login")]
-pub async fn login(
-    pool: web::Data<DbPool>,
-    req: web::Json<LoginUser>,
-) -> HttpResponse {
+pub async fn login(pool: web::Data<DbPool>, req: web::Json<LoginUser>) -> HttpResponse {
     log::info!("logging in user");
     service::login(pool, req.into_inner()).await
 }

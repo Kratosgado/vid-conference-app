@@ -1,6 +1,5 @@
 pub mod controller;
 pub mod service;
-pub mod util;
 
 use actix_web::web;
 
