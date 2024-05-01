@@ -4,8 +4,8 @@ use argon2::{
     Argon2,
 };
 use jsonwebtoken::{encode, get_current_timestamp, DecodingKey, EncodingKey, Header, Validation};
+use types::users::{UserClaims, Role};
 
-use super::users::util::{Role, UserClaims};
 
 pub fn hash_password(password: &str) -> (String, String) {
     let salt_str = SaltString::generate(&mut OsRng);
