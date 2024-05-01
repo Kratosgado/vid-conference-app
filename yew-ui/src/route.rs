@@ -1,23 +1,25 @@
 use yew::prelude::*;
 use yew_router::Routable;
 
-use crate::pages::{
-    login::Login,
-    home::Home,
-    signup::Signup,
-    profile::Profile,
-};
 use crate::components::topbar::TopBar;
+use crate::pages::{home::Home, login::Login, profile::Profile, signup::Signup};
 
 #[derive(Routable, PartialEq, Clone)]
 pub enum Route {
-    #[at("/login")] Login,
-    #[at("/")] Home,
-    #[at("/signup")] Signup,
-    #[at("/meeting1")] Meeting1,
-    #[at("/meeting2")] Meeting2,
-    #[at("/settings")] Settings,
-    #[at("/profile")] Profile,
+    #[at("/login")]
+    Login,
+    #[at("/")]
+    Home,
+    #[at("/signup")]
+    Signup,
+    #[at("/meeting1")]
+    Meeting1,
+    #[at("/meeting2")]
+    Meeting2,
+    #[at("/settings")]
+    Settings,
+    #[at("/profile")]
+    Profile,
 }
 
 impl Route {

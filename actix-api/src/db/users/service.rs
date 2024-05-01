@@ -17,7 +17,7 @@ use diesel::{delete, prelude::*};
 pub async fn sign_up(pool: web::Data<DbPool>, sign_up_data: SignUpUser) -> HttpResponse {
     log::info!("creating user with data: {:?}", sign_up_data.clone());
 
-    let (password_hash, salt_str) = crate::db::auth::hash_password(&sign_up_data.password);
+    let (password_hash, _salt_str) = crate::db::auth::hash_password(&sign_up_data.password);
 
     let new_user = User {
         id: uuid::Uuid::new_v4().to_string(),
