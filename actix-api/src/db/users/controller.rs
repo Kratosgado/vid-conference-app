@@ -1,8 +1,9 @@
+use crate::db::auth;
+
 use super::service;
-use actix_api::auth;
 use actix_api::DbPool;
 use actix_web::{delete, get, post, web, HttpRequest, HttpResponse};
-use types::users::{LoginUser, Role, SignUpUser, UserClaims};
+use types::users::{LoginUser, Role, SignUpUser};
 
 #[post("/signup")]
 pub async fn sign_up(pool: web::Data<DbPool>, req: web::Json<SignUpUser>) -> HttpResponse {

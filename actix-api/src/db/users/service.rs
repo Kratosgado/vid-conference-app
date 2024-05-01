@@ -1,12 +1,12 @@
 // The service module is where the business logic of the application is implemented.use actix_api::DbConn;
 
-use crate::db::{auth, models::User, users::util::Role};
+use crate::db::{auth, models::User};
 
-use super::util::{LoginUser, SignUpUser};
 use crate::schema::users::dsl::*;
 use actix_api::{DbConn, DbPool};
 use actix_web::{web, HttpResponse};
 use diesel::{delete, prelude::*};
+use types::users::{LoginUser, Role, SignUpUser};
 
 /// Create a new user. and inserts it to database.
 ///
