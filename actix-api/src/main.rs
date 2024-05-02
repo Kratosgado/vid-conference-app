@@ -1,5 +1,6 @@
 use actix_api::DbPool;
-use actix_session::SessionMiddleware;
+use actix_cors::Cors;
+// use actix_session::SessionMiddleware;
 use actix_web::{web, App, HttpResponse, HttpServer};
 
 pub mod db;
@@ -18,11 +19,12 @@ async fn main() {
         .unwrap();
 
     let pool: DbPool = db::create_pool();
-    let (redis_store , key) = db::create_redis_middleware().await;
+    // let (redis_store , key) = db::create_redis_middleware().await;
 
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(SessionMiddleware::new(redis_store.clone(), key.clone()))
+            .wrap(Cors::permissive())
+            // .wrap(SessionMiddleware::new(redis_store.clone(), key.clone()))
             .app_data(web::Data::new(pool.clone()))
             .service(web::scope("/users").configure(db::users::user_config))
             .default_service(web::to(|| HttpResponse::Ok()))
