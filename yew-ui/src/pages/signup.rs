@@ -5,6 +5,7 @@ use wasm_bindgen_futures::spawn_local;
 use gloo_net::http::Request;
 
 use crate::Route;
+use crate::constants::SIGNUP_URL;
 
 #[function_component(Signup)]
 pub fn signup() -> Html {
@@ -35,16 +36,26 @@ pub fn signup() -> Html {
             });
 
             spawn_local(async move {
-                let request = Request::post("http://localhost:8000/users/signup")
+                let window = web_sys::window().unwrap();
+                let request = Request::post(&SIGNUP_URL)
                    .json(&sign_data)
                    .unwrap();
 
                 let response = request.send().await.unwrap();
 
                 if response.ok() {
-                    navigator.push(&Route::Home);
+                    let confirm = window.confirm_with_message("Signup successful. Proceed to login?");
+                    if confirm.unwrap() {
+                        navigator.push(&Route::Login);
+                    }
                 } else {
                     log::error!("Signup error: {}", response.text().await.unwrap());
+                    // display error message
+                    let error = window.alert_with_message("Signup failed. Please try again.");
+                    if error.is_err() {
+                        log::error!("Failed to display error message");
+                    }
+
                 }
             });
         })

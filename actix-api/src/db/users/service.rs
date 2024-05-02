@@ -68,7 +68,7 @@ pub async fn login(pool: web::Data<DbPool>, login_data: LoginUser) -> HttpRespon
                 };
                 log::info!("user logged in successfully");
                 match auth::generate_token(user.email, role) {
-                    Ok(token) => return HttpResponse::Ok().json(token),
+                    Ok(token) => return HttpResponse::Ok().body(token),
                     Err(err) => return HttpResponse::from_error(err),
                 }
             }
