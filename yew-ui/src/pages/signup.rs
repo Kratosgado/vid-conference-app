@@ -20,6 +20,7 @@ pub fn signup() -> Html {
         let password_ref = password_ref.clone();
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
+            let navigator = navigator.clone();
             let username = username_ref.cast::<HtmlInputElement>().unwrap().value();
             let email = email_ref.cast::<HtmlInputElement>().unwrap().value();
             let password = password_ref.cast::<HtmlInputElement>().unwrap().value();
@@ -41,7 +42,7 @@ pub fn signup() -> Html {
                 let response = request.send().await.unwrap();
 
                 if response.ok() {
-                    // navigator.push(&Route::Home);
+                    navigator.push(&Route::Home);
                 } else {
                     log::error!("Signup error: {}", response.text().await.unwrap());
                 }
