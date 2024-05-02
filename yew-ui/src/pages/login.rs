@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 use web_sys::HtmlInputElement;
 
-use crate::route::Route;
+use crate::Route;
 
 #[function_component(Login)]
 pub fn login() -> Html {

@@ -4,7 +4,7 @@ use yew_router::prelude::*;
 use wasm_bindgen_futures::spawn_local;
 use gloo_net::http::Request;
 
-use crate::route::Route;
+use crate::Route;
 
 #[function_component(Signup)]
 pub fn signup() -> Html {

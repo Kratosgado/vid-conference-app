@@ -1,12 +1,9 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-pub mod route;
-use route::Route;
-pub mod pages;
-pub mod components;
 
-use components::topbar::TopBar;
+use yew_ui::Route;
+use yew_ui::TopBar;
 
 struct App {}
 

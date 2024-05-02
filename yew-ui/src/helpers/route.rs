@@ -1,7 +1,6 @@
 use yew::prelude::*;
 use yew_router::Routable;
 
-use crate::components::topbar::TopBar;
 use crate::pages::{home::Home, login::Login, profile::Profile, signup::Signup};
 
 #[derive(Routable, PartialEq, Clone)]

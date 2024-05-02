@@ -1,7 +1,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::route::Route;
+use crate::Route;
 
 #[function_component(TopBar)]
 pub fn top_bar() -> Html {
@@ -14,7 +14,7 @@ pub fn top_bar() -> Html {
             navigator.push(&route);
         })
     };
-    
+
     html!(
         <header class="top-bar">
             <div class="appName">
@@ -24,7 +24,7 @@ pub fn top_bar() -> Html {
                 <a href="/">{"Home"}</a>
                 <a href="/profile">{"Profile"}</a>
                 <a href="/login">{"Login"}</a>
-              
+
             </div>
         </header>
     )
