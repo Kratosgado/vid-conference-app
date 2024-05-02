@@ -1,9 +1,8 @@
-use serde_json::json;
-use wasm_bindgen::{JsCast, JsValue};
-use wasm_bindgen_futures::{spawn_local, JsFuture};
-use web_sys::{HtmlInputElement, RequestInit, RequestMode, Response};
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_router::prelude::*;
+use wasm_bindgen_futures::spawn_local;
+use gloo_net::http::Request;
 
 use crate::route::Route;
 
@@ -25,37 +24,28 @@ pub fn signup() -> Html {
             let email = email_ref.cast::<HtmlInputElement>().unwrap().value();
             let password = password_ref.cast::<HtmlInputElement>().unwrap().value();
 
-            let data = json!({
+            // Handle signup submission
+            log::info!("Signup submitted: {}, {}, {}", username, email, password);
+
+            let sign_data = serde_json::json!({
                 "username": username,
                 "email": email,
                 "password": password,
             });
 
-            // Create request options
-            let mut opts = RequestInit::new();
-            opts.method("POST");
-            opts.mode(RequestMode::Cors);
-            opts.body(Some(&JsValue::from_str(&data.to_string())));
+            spawn_local(async move {
+                let request = Request::post("http://localhost:8000/users/signup")
+                   .json(&sign_data)
+                   .unwrap();
 
-            // Send POST request
-            let request = web_sys::Request::new_with_str_and_init("http://localhost:8000/users/signup", &opts).unwrap();
-             let _ = request.headers().set("content-type", "application/json");
+                let response = request.send().await.unwrap();
 
-            let future = web_sys::window().unwrap().fetch_with_request(&request);
-
-            // Process response
-            let future = async move {
-                let response = JsFuture::from(future).await.unwrap();
-                let response: Response = response.unchecked_into();
                 if response.ok() {
-                    log::info!("Signup successful");
                     // navigator.push(&Route::Home);
                 } else {
-                    log::error!("Signup failed: {}", response.status_text());
+                    log::error!("Signup error: {}", response.text().await.unwrap());
                 }
-            };
-            spawn_local(future);
-
+            });
         })
     };
 
@@ -96,7 +86,8 @@ pub fn signup() -> Html {
                         id="password"
                     />
                 </div>
-                <input type="submit" value="SIGNUP" class="button" />
+                <input type="submit" value="SIGNUP" class="button"
+                />
                 <p>{"Already have an account?"}
                     <a href="/signup">{" Log in"}</a></p>
             </form>
