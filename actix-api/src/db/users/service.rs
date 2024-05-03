@@ -59,7 +59,7 @@ pub async fn login(pool: web::Data<DbPool>, login_data: LoginUser) -> HttpRespon
     match res {
         Ok(ok_res) => {
             log::info!("user found...checking password");
-            let user = ok_res.unwrap();
+            let user: User = ok_res.unwrap();
             if auth::verify_password(&login_data.password, &user.password) {
                 let role = if user.username == "admin" {
                     Role::Admin
@@ -67,7 +67,7 @@ pub async fn login(pool: web::Data<DbPool>, login_data: LoginUser) -> HttpRespon
                     Role::User
                 };
                 log::info!("user logged in successfully");
-                match auth::generate_token(user.email, role) {
+                match auth::generate_token(user.id, role) {
                     Ok(token) => return HttpResponse::Ok().body(token),
                     Err(err) => return HttpResponse::from_error(err),
                 }

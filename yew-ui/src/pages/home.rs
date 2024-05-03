@@ -19,7 +19,7 @@ pub fn home() -> Html {
             let username = username_ref.cast::<HtmlInputElement>().unwrap().value();
             let meeting_id = meeting_id_ref.cast::<HtmlInputElement>().unwrap().value();
             navigator.push(&Route::Meeting1 {
-           
+
             })
         })
     };

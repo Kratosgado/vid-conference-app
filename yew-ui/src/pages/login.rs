@@ -70,11 +70,11 @@ pub fn login() -> Html {
                         <input 
                         class="text-input"
                         ref={email_ref} 
-                        type="text"
+                        type="email"
                         required={true}
-                        placeholder="Username"
-                        pattern="^[a-zA-Z0-9]{6,}$"
-                         id="username" 
+                        placeholder="Email"
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+[a-zA-Z]{2,}$"
+                         id="email" 
                     />
                     <input 
                         ref={password_ref}

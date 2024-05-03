@@ -17,7 +17,7 @@ pub struct LoginUser {
 pub struct UserClaims {
     pub iat: u64,
     pub exp: u64,
-    pub email: String,
+    pub user_id: String,
     pub role: Role,
 }
 

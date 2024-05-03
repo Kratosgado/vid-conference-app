@@ -29,14 +29,14 @@ pub fn verify_password(password: &String, hash: &String) -> bool {
         .is_ok()
 }
 
-pub fn generate_token(email: String, role: Role) -> Result<String, Error> {
-    log::info!("generating token for user: {}", email);
+pub fn generate_token(user_id: String, role: Role) -> Result<String, Error> {
+    log::info!("generating token for user: {}", user_id);
     let secret = std::env::var("JWT_KEY").expect("JWT_KEY must be set");
 
     let iat = seconds_since_epoch();
     let exp = expiry(iat, SECONDS_VALID_FOR);
 
-    let claims = UserClaims { email, role , exp, iat };
+    let claims = UserClaims { user_id, role , exp, iat };
     log::info!("original iat: {}", claims.iat);
     log::info!("original exp: {}", claims.exp);
 
