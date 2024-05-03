@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::{constants::GET_CURRENT_USER_URL, Html};
 use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
@@ -6,7 +8,6 @@ use yew::{function_component, html};
 use yewdux::{init_listener, use_store, Dispatch, Listener, Store};
 
 #[derive(Default, Clone, PartialEq, Store)]
-#[store(storage = "local")]
 pub struct State {
     pub current_user: Option<User>,
 }
@@ -61,4 +62,10 @@ pub struct User {
     pub username: String,
     pub email: String,
     pub password: String,
+}
+
+impl Display for User {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.username)
+    }
 }

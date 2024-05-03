@@ -3,6 +3,8 @@ use yew_router::Routable;
 
 use crate::pages::{home::Home, login::Login, profile::Profile, signup::Signup};
 
+use super::states::User;
+
 #[derive(Routable, PartialEq, Clone)]
 pub enum Route {
     #[at("/login")]
@@ -17,8 +19,8 @@ pub enum Route {
     Meeting2,
     #[at("/settings")]
     Settings,
-    #[at("/profile")]
-    Profile,
+    #[at("/profile/:username/:email")]
+    Profile { username: String , email: String},
 }
 
 impl Route {
@@ -33,7 +35,7 @@ impl Route {
             // Route::Meeting1 => html! { <pages::meeting1::Meeting1 /> },
             // Route::Meeting2 => html! { <pages::meeting2::Meeting2 /> },
             // Route::Settings => html! { <pages::settings::Settings /> },
-            Route::Profile => html! { <Profile /> },
+            Route::Profile {username, email } => html! { <Profile username = {username} email = {email}/> },
         }
     }
 }
